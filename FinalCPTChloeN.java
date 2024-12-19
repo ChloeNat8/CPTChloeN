@@ -5,5 +5,6 @@ public class FinalCPTChloeN{
 		Console con = new Console();
 		
 		con.println("Hi");
+		con.println("Hi");
 	}
 }
