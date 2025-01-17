@@ -18,11 +18,10 @@ public class FinalCPTChloeN{
 		// Main Menu
 		BufferedImage imgMainMenu = con.loadImage("mainmenu.jpg");
 		
-		con.setBackgroundColor(new Color(82, 67, 130));
-		//con.drawImage(imgMainMenu, 0, 0);
+		con.drawImage(imgMainMenu, 0, 0);
 		
 		// Variables
-		int intChoice;
+		char chrChoice;
 		boolean boolExit;
 		
 		// Initialize Variables
@@ -30,24 +29,18 @@ public class FinalCPTChloeN{
 		
 		// Main Menu
 		while(!boolExit){
-			con.println("--- Connect 4 Main Menu ---");
-			con.println("1. Play Game");
-			con.println("2. Instructions");
-			con.println("3. Leaderboard");
-			con.println("4. Exit");
-			con.print("Enter your choice: ");
-			intChoice = con.readInt();
+			con.println();
+			chrChoice = con.getChar();
 			
 			// Depending on the choice the user, do the associated task
-			if(intChoice == 1){
+			if(chrChoice == 'p'){
 				playGame(con);
-			}else if(intChoice == 2){
-			}else if(intChoice == 3){
-			}else if(intChoice == 4){
+			}else if(chrChoice == 'l'){
+			}else if(chrChoice == 'i'){
+			}else if(chrChoice == 't'){
+			}else if(chrChoice == 'q'){
 				con.println("Exiting Game...");
 				boolExit = true;
-			}else{
-				con.println("Invalid choice. Please try again.");
 			}
 		}	
 		
@@ -77,6 +70,7 @@ public class FinalCPTChloeN{
         
         // Main Game
         while (!boolGameWon && !IsBoardFull(intBoard, intRows, intColumns, intEmpty)) {
+            con.setBackgroundColor(new Color(82, 67, 130));
             MakeBoard(intBoard, intRows, intColumns, con);
             if(boolIsPlayer1Turn == true){
 				con.println("Player 1 (X), it's your turn");
@@ -85,7 +79,23 @@ public class FinalCPTChloeN{
 			}
             con.print("Enter the column (1-7) to drop your piece: ");
             int column = con.readInt() - 1;
-        }
+            
+            if (column < 0 || column >= intColumns) {
+                con.println("Invalid column. Please try again.");
+                continue;
+            }
+            if(boolIsPlayer1Turn = true){
+				if(!DropPiece(intBoard, intColumns, intPlayer1, intRows, intEmpty)) {
+					con.println("Column is full. Please try a different column.");
+					continue;
+				}
+            }else{
+				if(!DropPiece(intBoard, intColumns, intPlayer2, intRows, intEmpty)){
+                con.println("Column is full. Please try a different column.");
+                continue;
+				}
+			}
+		}
 	}
 	
 	// InitializeBoard
@@ -134,6 +144,18 @@ public class FinalCPTChloeN{
             con.println();
         }
 
+    }
+    
+    // Drop Piece
+    public static boolean DropPiece(int[][] board, int column, int piece, int rows, int empty) {
+        int x;
+        for (x = rows - 1; x >= 0; x--){
+            if (board[x][column] == empty){
+                board[x][column] = piece;
+                return true;
+            }
+        }
+        return false;
     }
 }
 
