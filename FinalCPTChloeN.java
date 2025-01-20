@@ -20,6 +20,9 @@ public class FinalCPTChloeN{
 		
 		con.drawImage(imgMainMenu, 0, 0);
 		
+		// Font
+		
+		
 		// Variables
 		char chrChoice;
 		boolean boolExit;
@@ -51,6 +54,7 @@ public class FinalCPTChloeN{
 
 	// playGame
 	public static void playGame(Console con) {
+		
 		// Variables
 		// Board
 		int intBoard[][];
@@ -60,9 +64,22 @@ public class FinalCPTChloeN{
         // Players
         int intPlayer1 = 1;
         int intPlayer2 = 2;
+        String strPlayer1Name;
+        String strPlayer2Name;
         // Gameplay
         boolean boolIsPlayer1Turn = true;
         boolean boolGameWon = false;
+        int intPlacement;
+        
+        // Change Background
+        con.clear();
+        con.setBackgroundColor(new Color(82, 67, 130));
+        
+        // Get Player's Names
+        con.println("Enter Player 1's name (X): ");
+        strPlayer1Name = con.readLine();
+        con.println("Enter Player 2's name (O): ");
+        strPlayer2Name = con.readLine();
         
         // Create the Board
         intBoard = new int[intRows][intColumns];
@@ -70,32 +87,74 @@ public class FinalCPTChloeN{
         
         // Main Game
         while (!boolGameWon && !IsBoardFull(intBoard, intRows, intColumns, intEmpty)) {
-            con.setBackgroundColor(new Color(82, 67, 130));
-            MakeBoard(intBoard, intRows, intColumns, con);
-            if(boolIsPlayer1Turn == true){
-				con.println("Player 1 (X), it's your turn");
-			}else{
-				con.println("Player 2 (O), it's your turn");
-			}
-            con.print("Enter the column (1-7) to drop your piece: ");
-            int column = con.readInt() - 1;
             
-            if (column < 0 || column >= intColumns) {
-                con.println("Invalid column. Please try again.");
-                continue;
+            // Print Game
+            con.clear();
+            PrintHeader(strPlayer1Name, strPlayer2Name, con);
+            MakeBoard(intBoard, intRows, intColumns, con);
+            
+            // Display Turn
+            PrintTurn(boolIsPlayer1Turn, strPlayer1Name, strPlayer2Name, con);
+			
+			// Get Column Input
+            
+            con.print("Enter the column (1-7) to drop your piece: ");
+            intPlacement = con.readInt() - 1;
+            
+            while(intPlacement < 0 || intPlacement >= intColumns){
+				con.println("Invalid column. Please try again.");
+				con.sleep(2000);
+				con.clear();
+				PrintHeader(strPlayer1Name, strPlayer2Name, con);
+				MakeBoard(intBoard, intRows, intColumns, con);
+				PrintTurn(boolIsPlayer1Turn, strPlayer1Name, strPlayer2Name, con);
+				con.print("Enter the column (1-7) to drop your piece: ");
+				intPlacement = con.readInt() - 1;
             }
-            if(boolIsPlayer1Turn = true){
-				if(!DropPiece(intBoard, intColumns, intPlayer1, intRows, intEmpty)) {
+            
+            // Drop Piece
+            if(boolIsPlayer1Turn){
+				if(!DropPiece(intBoard, intPlacement, intPlayer1, intRows, intEmpty)) {
 					con.println("Column is full. Please try a different column.");
-					continue;
 				}
             }else{
-				if(!DropPiece(intBoard, intColumns, intPlayer2, intRows, intEmpty)){
-                con.println("Column is full. Please try a different column.");
-                continue;
+				if(!DropPiece(intBoard, intPlacement, intPlayer2, intRows, intEmpty)){
+					con.println("Column is full. Please try a different column.");
 				}
 			}
-		}
+			
+			// Check for Win
+			if(boolIsPlayer1Turn){
+				boolGameWon = CheckWin(intBoard, intPlayer1, intRows, intColumns);
+			}else{
+				boolGameWon = CheckWin(intBoard, intPlayer2, intRows, intColumns);
+			}
+
+			// Handle Win or Switch Turns
+			if(boolGameWon){
+				con.clear();
+				PrintHeader(strPlayer1Name, strPlayer2Name, con);
+                MakeBoard(intBoard, intRows, intColumns, con);
+                if(boolIsPlayer1Turn){
+					con.println(strPlayer1Name + " (X) wins! Congratulations!");
+				}else{
+					con.println(strPlayer2Name + " (O) wins! Congratulations!");
+				}
+			}else{            
+				boolIsPlayer1Turn = !boolIsPlayer1Turn;
+			}
+       		
+       		// If Draw
+       		if(!boolGameWon){
+				con.clear();
+				PrintHeader(strPlayer1Name, strPlayer2Name, con);
+				MakeBoard(intBoard, intRows, intColumns, con);
+				con.println("It's a draw! No one wins.");
+			}
+			
+			// Ask User to Replay
+			
+        }
 	}
 	
 	// InitializeBoard
@@ -119,6 +178,16 @@ public class FinalCPTChloeN{
         }
         return true;
 	}
+	
+	// MakeHeader
+	public static void PrintHeader(String strPlayer1, String strPlayer2, Console con) {
+        con.println("Connect 4");
+        con.println("---------------------------------");
+        con.println(strPlayer1 + " (X)");
+        con.println();
+        con.println(strPlayer2 + " (O)");
+        con.println("---------------------------------");
+    }
 	
 	// MakeBoard
 	public static void MakeBoard(int[][] board, int rows, int columns, Console con) {
@@ -146,7 +215,16 @@ public class FinalCPTChloeN{
 
     }
     
-    // Drop Piece
+    // PrintTurn
+    public static void PrintTurn(boolean IsPlayer1Turn, String Player1Name, String Player2Name, Console con){
+		if(IsPlayer1Turn){
+			con.println(Player1Name + " (X), it's your turn");
+		}else{
+			con.println(Player2Name + " (O), it's your turn");
+		}
+	}
+    
+    // DropPiece
     public static boolean DropPiece(int[][] board, int column, int piece, int rows, int empty) {
         int x;
         for (x = rows - 1; x >= 0; x--){
@@ -157,6 +235,50 @@ public class FinalCPTChloeN{
         }
         return false;
     }
+    
+    // CheckWin
+    public static boolean CheckWin(int[][] board, int piece, int rows, int columns) {
+     int x;
+     int y;
+     // Check horizontal
+        for (x = 0; x < rows; x++) {
+            for (y = 0; y <= columns - 4; y++) {
+                if(board[x][y] == piece && board[x][y + 1] == piece && board[x][y + 2] == piece && board[x][y + 3] == piece){
+                    return true;
+                }
+            }
+        }
+
+        // Check vertical
+        for (x = 0; x <= rows - 4; x++) {
+            for (y = 0; y < columns; y++) {
+                if(board[x][y] == piece && board[x + 1][y] == piece && board[x + 2][y] == piece && board[x + 3][y] == piece){
+                    return true;
+                }
+            }
+        }
+
+        // Check diagonal 
+        for (x = 0; x <= rows - 4; x++) {
+            for (y = 0; y <= columns - 4; y++) {
+                if(board[x][y] == piece && board[x + 1][y + 1] == piece && board[x + 2][y + 2] == piece && board[x + 3][y + 3] == piece){
+                    return true;
+                }
+            }
+        }
+
+        // Check diagonal other way
+        for (x = 3; x < rows; x++) {
+            for (y = 0; y <= columns - 4; y++) {
+                if(board[x][y] == piece && board[x - 1][y + 1] == piece && board[x - 2][y + 2] == piece && board[x - 3][y + 3] == piece){
+                    return true;
+                }
+            }
+        }
+
+        return false;
+    }
+    
 }
 
 // 
