@@ -205,6 +205,7 @@ public class FinalCPTChloeN{
 				highscores.println(strPlayer2Name);
 				highscores.println(intPlayer2Wins);
 				highscores.close();
+				con.setTextColor(new Color(255, 255, 255));
 				
 				MainMenu(con);
 			}
