@@ -197,7 +197,7 @@ public class FinalCPTChloeN{
 			con.println("  Do you want to play again or go back to the main menu (y/n)");
 			con.println("  Press any key to play again or (m) to go back to the main menu");
 			chrPlayAgain = con.getChar();
-			if(chrPlayAgain == 'm'){
+			if(chrPlayAgain == 'm' || chrPlayAgain == 'n'){
 				// Write Highscores to highscores.txt
 				TextOutputFile highscores = new TextOutputFile("highscores.txt", true);
 				highscores.println(strPlayer1Name);
