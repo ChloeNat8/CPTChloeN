@@ -284,12 +284,11 @@ public class FinalCPTChloeN{
 					con.setTextColor(new Color(intRGB[intTheme][6], intRGB[intTheme][7], intRGB[intTheme][8]));
 					chrPiece = 'O';
 				}else{
-					con.setTextColor(new Color(255, 255, 255));
+					//con.setTextColor(new Color(255, 255, 255));
 					chrPiece = '.';
 				}
-                con.print(chrPiece + " ");
-                con.setTextColor(new Color(255, 255, 255));
-                
+                con.print(chrPiece + " ");  
+                //con.setTextColor(new Color(255, 255, 255));              
             }
             con.println();
         }
