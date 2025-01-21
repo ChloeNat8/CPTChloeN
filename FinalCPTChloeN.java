@@ -4,7 +4,7 @@ Name: Chloe Natividad
 
 Game: Connect 4
 
-Purpose:
+Purpose: Like the classic game we all know and love, the objective of the game is to get 4 in a row by taking turns placing pieces
 
 Date: January 21, 2025
 ------------------------------------------------------------------------------------------------
@@ -36,6 +36,7 @@ public class FinalCPTChloeN{
 		char chrChoice;
 		boolean boolExit;
 		String strMenu;
+		int intTheme = 0;
 		
 		// Initialize Variables
 		boolExit = false;
@@ -46,7 +47,7 @@ public class FinalCPTChloeN{
 			
 			// Depending on the choice the user, do the associated task
 			if(chrChoice == 'p'){
-				PlayGame(con);
+				PlayGame(intTheme, con);
 			}else if(chrChoice == 'l'){
 				Leaderboard(con);
 			}else if(chrChoice == 'h'){
@@ -58,7 +59,6 @@ public class FinalCPTChloeN{
 			}else if(chrChoice == 's'){
 				Secret(con);
 			}else if(chrChoice == 'q'){
-				con.println("Exiting Game...");
 				boolExit = true;
 			}
 		}	
@@ -67,7 +67,7 @@ public class FinalCPTChloeN{
 	}
 
 	// playGame
-	public static void PlayGame(Console con){
+	public static void PlayGame(int intTheme, Console con){
 		boolean boolPlayAgain = true;
 		String strPlayer1Name;
         String strPlayer2Name;
@@ -121,7 +121,7 @@ public class FinalCPTChloeN{
 				// Print Game
 				con.clear();
 				PrintHeader(strPlayer1Name, strPlayer2Name, intPlayer1Wins, intPlayer2Wins, con);
-				MakeBoard(intBoard, intRows, intColumns, con);
+				MakeBoard(intBoard, intRows, intColumns, intTheme, con);
 				PrintTurn(boolIsPlayer1Turn, strPlayer1Name, strPlayer2Name, con);
 				
 				// Get Column Input
@@ -136,7 +136,7 @@ public class FinalCPTChloeN{
 						con.sleep(2000);
 						con.clear();
 						PrintHeader(strPlayer1Name, strPlayer2Name, intPlayer1Wins, intPlayer2Wins, con);
-						MakeBoard(intBoard, intRows, intColumns, con);
+						MakeBoard(intBoard, intRows, intColumns, intTheme, con);
 						PrintTurn(boolIsPlayer1Turn, strPlayer1Name, strPlayer2Name, con);
 						con.print("  Enter the column (1-7) to drop your piece: ");
 						strPlacement = con.readLine();
@@ -175,7 +175,7 @@ public class FinalCPTChloeN{
 				if(boolGameWon){
 					con.clear();
 					PrintHeader(strPlayer1Name, strPlayer2Name, intPlayer1Wins, intPlayer2Wins, con);
-					MakeBoard(intBoard, intRows, intColumns, con);
+					MakeBoard(intBoard, intRows, intColumns, intTheme, con);
 					if(boolIsPlayer1Turn){
 						intPlayer1Wins = intPlayer1Wins + 1;
 						con.println("  " + strPlayer1Name + " (X) wins! Congratulations!");
@@ -191,7 +191,7 @@ public class FinalCPTChloeN{
 				if(!boolGameWon){
 					con.clear();
 					PrintHeader(strPlayer1Name, strPlayer2Name, intPlayer1Wins, intPlayer2Wins, con);
-					MakeBoard(intBoard, intRows, intColumns, con);
+					MakeBoard(intBoard, intRows, intColumns, intTheme, con);
 					con.println("  " + "It's a draw! No one wins.");
 				}
 			}
@@ -214,20 +214,21 @@ public class FinalCPTChloeN{
 	
 	// InitializeBoard
 	// This method creates the 2d array and fills it all with 0
-	public static void InitializeBoard(int[][] board, int rows, int columns, int empty, Console con){
+	public static void InitializeBoard(int[][] intBoard, int intRows, int intColumns, int intEmpty, Console con){
         int x;
         int y;
-        for (x = 0; x < rows; x++) {
-            for (y = 0; y < columns; y++) {
-                board[x][y] = empty;
+        for (x = 0; x < intRows; x++) {
+            for (y = 0; y < intColumns; y++) {
+                intBoard[x][y] = intEmpty;
             }
         }
     }
     
     // IsBoardFull
-    public static boolean IsBoardFull(int[][] board, int rows, int columns, int empty){
-        for (int y = 0; y < columns; y++) {
-            if (board[0][y] == empty) {
+    public static boolean IsBoardFull(int[][] intBoard, int intRows, int intColumns, int intEmpty){
+        int y;
+        for (y = 0; y < intColumns; y++) {
+            if (intBoard[0][y] == intEmpty) {
                 return false;
             }
         }
@@ -235,63 +236,83 @@ public class FinalCPTChloeN{
 	}
 	
 	// MakeHeader
-	public static void PrintHeader(String Player1, String Player2, int Player1Wins, int Player2Wins, Console con) {
+	public static void PrintHeader(String strPlayer1, String strPlayer2, int intPlayer1Wins, int intPlayer2Wins, Console con) {
 		con.println();
         con.println("  Connect 4");
         con.println("  ---------------------------------");
-        con.println("  " + Player1 + " (X)");
-        con.println("  Wins: " + Player1Wins);
+        con.println("  " + strPlayer1 + " (X)");
+        con.println("  Wins: " + intPlayer1Wins);
         con.println();
-        con.println("  " + Player2 + " (O)");
-        con.println("  Wins: " + Player2Wins);
+        con.println("  " + strPlayer2 + " (O)");
+        con.println("  Wins: " + intPlayer2Wins);
         con.println("  ---------------------------------");
     }
 	
 	// MakeBoard
-	public static void MakeBoard(int[][] board, int rows, int columns, Console con) {
-        con.println();
+	public static void MakeBoard(int[][] intBoard, int intRows, int intColumns, int intTheme, Console con) {
+        
         int x;
         int y;
         char chrPiece;
+        /*
+        Color clrBoard;
+        Color clrPlayer1;
+        Color clrPlayer2;
+        
+        
+        // Colors
+		int intRGB[][] = MakeThemeArray(con);
+        clrBoard = new Color(intRGB[intTheme][0], intRGB[intTheme][1], intRGB[intTheme][2]);
+        clrPlayer1 = new Color(intRGB[intTheme][3], intRGB[intTheme][4], intRGB[intTheme][5]);
+        clrPlayer2 = new Color(intRGB[intTheme][6], intRGB[intTheme][7], intRGB[intTheme][8]);
+		*/
+
+        con.println();
         con.print("          ");
-        for (y = 1; y <= columns; y++) {
+        for (y = 1; y <= intColumns; y++) {
             con.print(y + " ");
         }
         con.println();
-        for (x = 0; x < rows; x++) {
+        for (x = 0; x < intRows; x++) {
 			con.print("          ");
-            for (y = 0; y < columns; y++) {
-				if(board[x][y] == 1){
+            for (y = 0; y < intColumns; y++) {
+				if(intBoard[x][y] == 1){
+					//con.setTextColor(clrPlayer1);
 					chrPiece = 'X';
-				}else if(board[x][y] == 2){
+				}else if(intBoard[x][y] == 2){
+					//con.setTextColor(clrPlayer2);
 					chrPiece = 'O';
 				}else{
+					con.setTextColor(new Color(255, 255, 255));
 					chrPiece = '.';
 				}
                 con.print(chrPiece + " ");
+                con.setTextColor(new Color(255, 255, 255));
+                
             }
             con.println();
         }
         con.println();        
+        //con.setDrawColor(clrBoard);
         con.setDrawColor(new Color(50, 49, 109));
         con.fillRoundRect(108, 230, 180, 190, 30, 30);
     }
     
     // PrintTurn
-    public static void PrintTurn(boolean IsPlayer1Turn, String Player1Name, String Player2Name, Console con){
-		if(IsPlayer1Turn){
-			con.println("  " + Player1Name + " (X), it's your turn");
+    public static void PrintTurn(boolean boolIsPlayer1Turn, String strPlayer1Name, String strPlayer2Name, Console con){
+		if(boolIsPlayer1Turn){
+			con.println("  " + strPlayer1Name + " (X), it's your turn");
 		}else{
-			con.println("  " + Player2Name + " (O), it's your turn");
+			con.println("  " + strPlayer2Name + " (O), it's your turn");
 		}
 	}
     
     // DropPiece
-    public static boolean DropPiece(int[][] board, int column, int piece, int rows, int empty) {
+    public static boolean DropPiece(int[][] intBoard, int intColumn, int intPiece, int intRows, int intEmpty){
         int x;
-        for (x = rows - 1; x >= 0; x--){
-            if (board[x][column] == empty){
-                board[x][column] = piece;
+        for (x = intRows - 1; x >= 0; x--){
+            if (intBoard[x][intColumn] == intEmpty){
+                intBoard[x][intColumn] = intPiece;
                 return true;
             }
         }
@@ -299,40 +320,40 @@ public class FinalCPTChloeN{
     }
     
     // CheckWin
-    public static boolean CheckWin(int[][] board, int piece, int rows, int columns) {
+    public static boolean CheckWin(int[][] intBoard, int intPiece, int intRows, int intColumns){
      int x;
      int y;
      // Check horizontal
-        for (x = 0; x < rows; x++) {
-            for (y = 0; y <= columns - 4; y++) {
-                if(board[x][y] == piece && board[x][y + 1] == piece && board[x][y + 2] == piece && board[x][y + 3] == piece){
+        for (x = 0; x < intRows; x++) {
+            for (y = 0; y <= intColumns - 4; y++) {
+                if(intBoard[x][y] == intPiece && intBoard[x][y + 1] == intPiece && intBoard[x][y + 2] == intPiece && intBoard[x][y + 3] == intPiece){
                     return true;
                 }
             }
         }
 
         // Check vertical
-        for (x = 0; x <= rows - 4; x++) {
-            for (y = 0; y < columns; y++) {
-                if(board[x][y] == piece && board[x + 1][y] == piece && board[x + 2][y] == piece && board[x + 3][y] == piece){
+        for (x = 0; x <= intRows - 4; x++) {
+            for (y = 0; y < intColumns; y++) {
+                if(intBoard[x][y] == intPiece && intBoard[x + 1][y] == intPiece && intBoard[x + 2][y] == intPiece && intBoard[x + 3][y] == intPiece){
                     return true;
                 }
             }
         }
 
         // Check diagonal 
-        for (x = 0; x <= rows - 4; x++) {
-            for (y = 0; y <= columns - 4; y++) {
-                if(board[x][y] == piece && board[x + 1][y + 1] == piece && board[x + 2][y + 2] == piece && board[x + 3][y + 3] == piece){
+        for (x = 0; x <= intRows - 4; x++) {
+            for (y = 0; y <= intColumns - 4; y++) {
+                if(intBoard[x][y] == intPiece && intBoard[x + 1][y + 1] == intPiece && intBoard[x + 2][y + 2] == intPiece && intBoard[x + 3][y + 3] == intPiece){
                     return true;
                 }
             }
         }
 
         // Check diagonal other way
-        for (x = 3; x < rows; x++) {
-            for (y = 0; y <= columns - 4; y++) {
-                if(board[x][y] == piece && board[x - 1][y + 1] == piece && board[x - 2][y + 2] == piece && board[x - 3][y + 3] == piece){
+        for (x = 3; x < intRows; x++) {
+            for (y = 0; y <= intColumns - 4; y++) {
+                if(intBoard[x][y] == intPiece && intBoard[x - 1][y + 1] == intPiece && intBoard[x - 2][y + 2] == intPiece && intBoard[x - 3][y + 3] == intPiece){
                     return true;
                 }
             }
@@ -422,83 +443,42 @@ public class FinalCPTChloeN{
 		con.println("  Press (m) to go back to the main menu");
 	}
 	
-	// Theme
-	public static String[][] MakeThemeArray(Console con){
-		String strThemes[][];
+	// MakeThemeArray
+	public static int[][] MakeThemeArray(Console con){
+		String strThemeName[] = new String[3];
+		int intRGB[][] = new int[3][9];
 		
 		TextInputFile themes = new TextInputFile("themes.txt");
-
 		while(themes.eof() == false){
 			String strName = themes.readLine();
-			String strBgR = themes.readLine();
-			String strBgG = themes.readLine();
-			String strBgB = themes.readLine();
-			String strPlayer1R = themes.readLine();
-			String strPlayer1G = themes.readLine();
-			String strPlayer1B = themes.readLine();
-			String strPlayer2R = themes.readLine();
-			String strPlayer2G = themes.readLine();
-			String strPlayer2B = themes.readLine();
+			int intBoardR = themes.readInt();
+			int intBoardG = themes.readInt();
+			int intBoardB = themes.readInt();
+			int intPlayer1R = themes.readInt();
+			int intPlayer1G = themes.readInt();
+			int intPlayer1B = themes.readInt();
+			int intPlayer2R = themes.readInt();
+			int intPlayer2G = themes.readInt();
+			int intPlayer2B = themes.readInt();
 		}
 		themes.close();
 		
-		strThemes = new String[3][10];
-		themes = new TextInputFile("themes.txt");
+		themes = new TextInputFile("themes.txt"); 
 		
 		int x;
 		int y;
-		for(x = 0; x < 3; x++){
-			for(y = 0; y < 9; y++){
-				strThemes[x][y] = themes.readLine();
+		for(x = 0; x < 3; x++) {
+			strThemeName[x] = themes.readLine(); 
+			for(y = 0; y < 8; y++) {
+				intRGB[x][y] = themes.readInt();
 			}
 		}
 		themes.close();
 		
-		return strThemes;
+						
+		return intRGB;
 	}
-	
-	// ColorArray
-	public static Color[] ColorArray(Console con){
-		MakeThemeArray(con);
-		Color ColorArray[] = new Color[3];		
-		// Hard Code data into array
-		ColorArray[0] = BoardColor(MakeThemeArray(con), 0);
-		ColorArray[1] = BoardColor(MakeThemeArray(con), 1);
-		ColorArray[2] = BoardColor(MakeThemeArray(con), 2);
-		ColorArray[3] = Player1Color(MakeThemeArray(con), 0);
-		ColorArray[4] = Player1Color(MakeThemeArray(con), 1);
-		ColorArray[5] = Player1Color(MakeThemeArray(con), 2);
-		ColorArray[6] = Player2Color(MakeThemeArray(con), 0);
-		ColorArray[7] = Player2Color(MakeThemeArray(con), 1);
-		ColorArray[8] = Player2Color(MakeThemeArray(con), 2);
 		
-		return ColorArray;
-	}
-	
-	// BoardColor
-	public static Color BoardColor(String[][] strThemes, int intChoice){
-			
-		Color clrBoard = new Color(Integer.parseInt(strThemes[intChoice][1]), Integer.parseInt(strThemes[intChoice][2]), Integer.parseInt(strThemes[intChoice][3]));
-		
-		return clrBoard;
-	}
-	
-	// Player1Color
-	public static Color Player1Color(String[][] strThemes, int intChoice){
-			
-		Color clrPlayer1 = new Color(Integer.parseInt(strThemes[intChoice][4]), Integer.parseInt(strThemes[intChoice][5]), Integer.parseInt(strThemes[intChoice][6]));
-		
-		return clrPlayer1;
-	}
-	
-	// Player2Color
-	public static Color Player2Color(String[][] strThemes, int intChoice){
-			
-		Color clrPlayer2 = new Color(Integer.parseInt(strThemes[intChoice][7]), Integer.parseInt(strThemes[intChoice][8]), Integer.parseInt(strThemes[intChoice][9]));
-		
-		return clrPlayer2;
-	}
-	
 	// ChooseTheme
 	public static int ChooseTheme(Console con){
 		int intChoice;
@@ -510,13 +490,13 @@ public class FinalCPTChloeN{
 		con.println("  1. Default");
 		con.println("  2. Classic");
 		con.println("  3. Christmas");
-		con.print("  Enter which theme you want to use (1-3): ");
 		con.println("  After inputing your choice, press (m) to go back to the main menu");
-		intChoice = con.readInt();
-		if(intChoice >= 1 && intChoice <=3){
+		con.print("  Enter which theme you want to use (1-3): ");
+		intChoice = con.readInt() - 1;
+		if(intChoice >= 0 && intChoice <=2){
 			return intChoice;
 		}else{
-			while(intChoice < 1 || intChoice > 3){
+			while(intChoice < 0 || intChoice > 2){
 				con.println("  Invalid choice. Please try again.");
 				con.sleep(2000);
 				con.clear();
@@ -526,10 +506,10 @@ public class FinalCPTChloeN{
 				con.println("  1. Default");
 				con.println("  2. Classic");
 				con.println("  3. Christmas");
-				con.print("  Enter which theme you want to use (1-3): ");
 				con.println("  After inputing your choice, press (m) to go back to the main menu");
-				intChoice = con.readInt();
-				if(intChoice >= 1 && intChoice <=3){
+				con.print("  Enter which theme you want to use (1-3): ");
+				intChoice = con.readInt() - 1;
+				if(intChoice >= 0 && intChoice <=2){
 					return intChoice;
 				}
 			}
