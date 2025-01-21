@@ -123,7 +123,7 @@ public class FinalCPTChloeN{
 				MakeBoard(intBoard, intRows, intColumns, con);
 				PrintTurn(boolIsPlayer1Turn, strPlayer1Name, strPlayer2Name, con);
 				
-				// Get Column Input
+				// Get Column Input														
 				con.print("  Enter the column (1-7) to drop your piece: ");
 				strPlacement = con.readLine();
 				if(strPlacement.equals("1") || strPlacement.equals("2") || strPlacement.equals("3") || strPlacement.equals("4") || strPlacement.equals("5") || strPlacement.equals("6") || strPlacement.equals("7")){
